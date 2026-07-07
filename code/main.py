@@ -14,3 +14,7 @@ while running:
 
 
     # draw game
+    display_surface.fill('red')
+    pygame.display.update() # updates all the screen
+
+pygame.quit() # making sure it closes correctly since u used pygame.init() 

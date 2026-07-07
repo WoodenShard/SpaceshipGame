@@ -15,6 +15,7 @@ x = 100
 
 # surface by importing an img
 player_surface = pygame.image.load('images/player.png').convert_alpha()
+player_rect = player_surface.get_frect(center = (WINDOW_WIDTH/2, WINDOW_HEIGHT/2))
 start_surf = pygame.image.load('images/star.png').convert_alpha()
 star_positions = [(randint(0,WINDOW_WIDTH),randint(0,WINDOW_HEIGHT)) for i in range(20)]
 
@@ -32,6 +33,12 @@ while running:
     #display_surface.blit(player_surface, (x, 150)) 
     for pos in star_positions:
         display_surface.blit(start_surf, pos)
+    
+    if player_rect.right < WINDOW_WIDTH:
+        player_rect.left += 0.1
+    
+    display_surface.blit(player_surface, player_rect)
+    
     pygame.display.update() # updates all the screen
 
     # the order in which you fill your screen in is REALLY IMPORTANT

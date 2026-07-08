@@ -12,7 +12,8 @@ clock = pygame.time.Clock() # it can control the frame rate
 
 playerSurface = pygame.image.load('images/player.png').convert_alpha()
 playerRect = playerSurface.get_frect(center = (window_width/2, window_height/2+300))
-playerDirection : int = 1
+playerDirection = pygame.math.Vector2(1,1) # we use Vector2 because we only need x,y if needed x,y,z we use Vector3 (make it as low as possible)
+playerSpeed = 1000
 
 meteorSurface = pygame.image.load('images/meteor.png').convert_alpha()
 meteorRect = meteorSurface.get_frect(center= (window_width/2, window_height/2))
@@ -26,7 +27,7 @@ laserSurface = pygame.image.load('images/laser.png').convert_alpha()
 laserRect = laserSurface.get_frect(bottomleft = (20,window_height-20))
 
 while running:
-    clock.tick(10) # decides the framerate
+    dt = clock.tick() / 1000 # decides the framerate
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -38,13 +39,16 @@ while running:
         window.blit(starsSurf, pos)
 
 
-
     window.blit(meteorSurface, meteorRect)
     window.blit(laserSurface, laserRect)
     
-    # PLAYER MOVEMENT
-    #playerRect.x += 20
-    #playerRect.y -= 10
+
+    playerRect.center += playerDirection * playerSpeed * dt
+    if playerRect.bottom >= window_height or playerRect.top <= 0:
+        playerDirection.y *= -1
+    if playerRect.right >= window_width or playerRect.left <= 0:
+        playerDirection.x *= -1
+    
 
     window.blit(playerSurface, playerRect)
 

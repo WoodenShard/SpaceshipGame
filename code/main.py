@@ -39,13 +39,14 @@ while running:
 
     # INPUT
     keys = pygame.key.get_pressed()
-    if keys[pygame.K_RIGHT]:
-        playerDirection.x = 1
-    else:
-        playerDirection.x = 0
+    playerDirection.x = int(keys[pygame.K_RIGHT] - int(keys[pygame.K_LEFT]))
+    playerDirection.y = int(keys[pygame.K_DOWN] - int(keys[pygame.K_UP]))
+    playerDirection = playerDirection.normalize() if playerDirection else playerDirection # utilized so while goine diagonally we go at the same speed
+    playerRect.center += playerDirection * playerSpeed *dt
 
-    playerRect.center += playerDirection * playerSpeed * dt
-
+    recentKeys = pygame.key.get_just_pressed()
+    if recentKeys[pygame.K_SPACE]:
+        print('Si')
             
     # Drawing game
     window.fill('darkgray')
@@ -53,7 +54,7 @@ while running:
         window.blit(starsSurf, pos)
 
     window.blit(meteorSurface, meteorRect)
-    window.blit(laserSurface, laserRect)   
+    window.blit(laserSurface, laserRect)
     window.blit(playerSurface, playerRect)
 
     # updating the screen

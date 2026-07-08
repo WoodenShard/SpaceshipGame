@@ -12,8 +12,8 @@ clock = pygame.time.Clock() # it can control the frame rate
 
 playerSurface = pygame.image.load('images/player.png').convert_alpha()
 playerRect = playerSurface.get_frect(center = (window_width/2, window_height/2+300))
-playerDirection = pygame.math.Vector2(1,1) # we use Vector2 because we only need x,y if needed x,y,z we use Vector3 (make it as low as possible)
-playerSpeed = 1000
+playerDirection = pygame.math.Vector2(0,0) # we use Vector2 because we only need x,y if needed x,y,z we use Vector3 (make it as low as possible)
+playerSpeed = 300
 
 meteorSurface = pygame.image.load('images/meteor.png').convert_alpha()
 meteorRect = meteorSurface.get_frect(center= (window_width/2, window_height/2))
@@ -28,30 +28,35 @@ laserRect = laserSurface.get_frect(bottomleft = (20,window_height-20))
 
 while running:
     dt = clock.tick() / 1000 # decides the framerate
-
+    # checking for events
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
+        # if event.type == pygame.KEYDOWN and event.key == pygame.K_DOWN:
+            # pass
+        # if event.type == pygame.MOUSEMOTION:
+            # playerRect.center = event.pos
 
+    # INPUT
+    keys = pygame.key.get_pressed()
+    if keys[pygame.K_RIGHT]:
+        playerDirection.x = 1
+    else:
+        playerDirection.x = 0
+
+    playerRect.center += playerDirection * playerSpeed * dt
+
+            
+    # Drawing game
     window.fill('darkgray')
-
     for pos in stars:
         window.blit(starsSurf, pos)
 
-
     window.blit(meteorSurface, meteorRect)
-    window.blit(laserSurface, laserRect)
-    
-
-    playerRect.center += playerDirection * playerSpeed * dt
-    if playerRect.bottom >= window_height or playerRect.top <= 0:
-        playerDirection.y *= -1
-    if playerRect.right >= window_width or playerRect.left <= 0:
-        playerDirection.x *= -1
-    
-
+    window.blit(laserSurface, laserRect)   
     window.blit(playerSurface, playerRect)
 
+    # updating the screen
     pygame.display.update()
 
 

@@ -7,6 +7,7 @@ window_width, window_height = 1280, 720
 window = pygame.display.set_mode((window_width, window_height))
 pygame.display.set_caption('Space Shooters')
 running : bool = True
+clock = pygame.time.Clock() # it can control the frame rate
 
 
 playerSurface = pygame.image.load('images/player.png').convert_alpha()
@@ -25,6 +26,7 @@ laserSurface = pygame.image.load('images/laser.png').convert_alpha()
 laserRect = laserSurface.get_frect(bottomleft = (20,window_height-20))
 
 while running:
+    clock.tick(10) # decides the framerate
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -39,10 +41,11 @@ while running:
 
     window.blit(meteorSurface, meteorRect)
     window.blit(laserSurface, laserRect)
+    
+    # PLAYER MOVEMENT
+    #playerRect.x += 20
+    #playerRect.y -= 10
 
-    playerRect.x += playerDirection * 0.4
-    if playerRect.right > window_width or playerRect.left < 0:
-        playerDirection *= -1
     window.blit(playerSurface, playerRect)
 
     pygame.display.update()

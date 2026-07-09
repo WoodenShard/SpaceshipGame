@@ -17,7 +17,7 @@ class Player(pygame.sprite.Sprite):
 
         self.can_shoot: bool = True
         self.laser_shoot_time: int = 0
-        self.cooldown_duration: int= 1200
+        self.cooldown_duration: int= 1000
 
     def laser_timer(self):
         if not self.can_shoot:
@@ -35,7 +35,7 @@ class Player(pygame.sprite.Sprite):
 
         recentKeys = pygame.key.get_just_pressed()
         if recentKeys[pygame.K_SPACE] and self.can_shoot:
-            print('fire')
+            Laser(laser_surf,self.rect.midtop,all_sprites)
             self.can_shoot: bool = False
             self.laser_shoot_time = pygame.time.get_ticks()
 
@@ -55,11 +55,15 @@ class Meteor(pygame.sprite.Sprite):
         self.rect = self.image.get_frect(center= (window_width/2, window_height/2))
 
 class Laser(pygame.sprite.Sprite):
-    def __init__(self,groups):
+    def __init__(self,surf,pos,groups):
         super().__init__(groups)
-        self.image = pygame.image.load('images/laser.png').convert_alpha()
-        self.rect = self.image.get_frect(bottomleft = (20,window_height-20))
+        self.image = surf
+        self.rect: pygame.FRect = self.image.get_frect(midbottom = pos)
 
+    def update(self,dt):
+        self.rect.centery -= 400 * dt  
+
+laser_surf = pygame.image.load('images/laser.png')
 
 pygame.init()
 

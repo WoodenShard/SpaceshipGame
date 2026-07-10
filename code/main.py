@@ -9,7 +9,7 @@ class Player(pygame.sprite.Sprite):
     def __init__(self, groups):
         super().__init__(groups)
         self.image= pygame.image.load('images/player.png').convert_alpha()
-        self.rect: pygame.FRect= self.image.get_frect(center=(window_width / 2, window_height / 2 + 300))
+        self.rect: pygame.FRect= self.image.get_frect(center=(window_width / 2, window_height- 150))
         self.direction = pygame.math.Vector2(0,0)
         self.speed = 600
 
@@ -85,6 +85,12 @@ def collisions():
         if collided_sprite:
             laser.kill()
 
+def display_score():
+    current_time = pygame.time.get_ticks() // 100
+    text_surf = font.render(str(current_time),True, (240,240,240))
+    text_rect = text_surf.get_frect(midbottom = (window_width/2, window_height-30))
+    window.blit(text_surf,text_rect)
+
 pygame.init()
 
 window_width, window_height = 1280, 720
@@ -96,8 +102,8 @@ clock = pygame.time.Clock() # it can control the frame rate
 # import
 laser_surf = pygame.image.load(path.join('images','laser.png')).convert_alpha()
 meteor_surf = pygame.image.load(path.join('images','meteor.png')).convert_alpha()
-font = pygame.font.Font(path.join('images','Oxanium-Bold.ttf'),20)
-text_surf = font.render('dsfs',True, 'red')
+font = pygame.font.Font(path.join('images','Oxanium-Bold.ttf'),40)
+
 
 
 # sprites
@@ -129,9 +135,9 @@ while running:
     collisions()
             
     # Drawing game
-    window.fill('darkgray')
+    window.fill('#3a2e3f')
 
-    window.blit(text_surf,(0,0))
+    display_score()
     all_sprites.draw(window)
 
     # updating the screen

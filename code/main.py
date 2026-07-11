@@ -5,13 +5,12 @@ from random import randint,uniform
 
 class Player(pygame.sprite.Sprite):
     
-
     def __init__(self, groups):
         super().__init__(groups)
-        self.image= pygame.image.load('images/player.png').convert_alpha()
+        self.image= pygame.image.load(path.join('images','player.png')).convert_alpha()
         self.rect: pygame.FRect= self.image.get_frect(center=(window_width / 2, window_height- 150))
         self.direction = pygame.math.Vector2(0,0)
-        self.speed = 600
+        self.speed = 500
 
         # cooldown
 
@@ -41,7 +40,7 @@ class Player(pygame.sprite.Sprite):
             self.laser_shoot_time = pygame.time.get_ticks()
 
         self.laser_timer()
- 
+      
 class Star(pygame.sprite.Sprite):
     
     def __init__(self, groups):
@@ -52,17 +51,23 @@ class Star(pygame.sprite.Sprite):
 class Meteor(pygame.sprite.Sprite):
     def __init__(self,surf,pos, groups):
         super().__init__(groups)
-        self.image = surf
+        self.original_surf = surf
+        self.image = self.original_surf
         self.rect: pygame.FRect = self.image.get_frect(center = pos)
         self.direction = pygame.math.Vector2(uniform(-0.5,0.5),1)
         self.speed: int = randint(400,500)
+        self.rotation_speed = randint(20,80)
+        self.rotation = 0
 
     def update(self,dt):
         self.rect.center += 400 * dt * self.direction
         if self.rect.top > window_height:
-            self.kill()
+            self.kill()  
         
-
+        self.rotation += self.rotation_speed * dt
+        self.image = pygame.transform.rotozoom(self.original_surf, self.rotation,1)
+        self.rect = self.image.get_frect(center = self.rect.center)      
+        
 class Laser(pygame.sprite.Sprite):
     def __init__(self,surf,pos,groups):
         super().__init__(groups)
@@ -75,7 +80,13 @@ class Laser(pygame.sprite.Sprite):
         self.rect.centery -= 400 * dt
         if self.rect.bottom <0:
             self.kill()
- 
+
+class AnimatedExplosion(pygame.sprite.Sprite):
+    def  __init__(self, frames,pos, groups):
+        super().__init__(groups)
+        self.image = frames[0]
+        self.rect = self.image.get_frect(center = pos)
+
 def collisions():
     global running
     collision_sprites = pygame.sprite.spritecollide(player, meteor_sprites, True, pygame.sprite.collide_mask) # type: ignore
@@ -108,7 +119,6 @@ meteor_surf = pygame.image.load(path.join('images','meteor.png')).convert_alpha(
 font = pygame.font.Font(path.join('images','Oxanium-Bold.ttf'),40)
 
 
-
 # sprites
 all_sprites: pygame.sprite.Group = pygame.sprite.Group() # groups can draw update and organize the stripes
 meteor_sprites: pygame.sprite.Group = pygame.sprite.Group()
@@ -121,7 +131,7 @@ for i in range(20):
 # meteor event
 
 meteor_event = pygame.event.custom_type()
-pygame.time.set_timer(meteor_event, 400)
+pygame.time.set_timer(meteor_event, 275)
 
 while running:
     dt = clock.tick() / 1000 # decides the framerate

@@ -19,6 +19,10 @@ class Player(pygame.sprite.Sprite):
         self.laser_shoot_time: int = 0
         self.cooldown_duration: int= 600
 
+        mask = pygame.mask.from_surface(self.image)
+        mask_surf = mask.to_surface()
+        self.image = mask_surf
+
     def laser_timer(self):
         if not self.can_shoot:
             self.current_time = pygame.time.get_ticks()
@@ -90,6 +94,7 @@ def display_score():
     text_surf = font.render(str(current_time),True, (240,240,240))
     text_rect = text_surf.get_frect(midbottom = (window_width/2, window_height-30))
     window.blit(text_surf,text_rect)
+    pygame.draw.rect(window,(240,240,240),text_rect.inflate(20,10).move(0,-8),5,10)
 
 pygame.init()
 
